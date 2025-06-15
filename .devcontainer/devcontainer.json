@@ -1,0 +1,19 @@
+{
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/vscode/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/home/vscode/workspace",
+  "name": "Projekt-SJU",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "ms-toolsai.jupyter"]
+    }
+  },
+  "postCreateCommand": "pip install --no-cache-dir -r requirements.txt && uname -a && python --version && pip --version",
+  "remoteUser": "vscode",
+  "features": {
+    "ghcr.io/eliises/devcontainer-features/devcontainers-cli:1": {}
+  }
+}
