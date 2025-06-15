@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ adamo-sv/projekt_sju }}
+  IMAGE_NAME:  adamo-sv/projekt_sju 
 
 jobs:
   build-and-publish:
