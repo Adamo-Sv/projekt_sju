@@ -1,145 +1,199 @@
----
-marp: true
-math: mathjax
-title: Raport z projektu
-size: 16:9
-paginate: true
-transition: fade
-backgroundImage: url("page-background.png")
-footer: "**Raport SJU**"
-style: |
-  @import url('https://unpkg.com/tailwindcss@^2/dist/utilities.min.css');
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Raport z projektu</title>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true });
+  </script>
+  <style>
+    body {
+      background-image: url('page-background.png');
+      background-size: cover;
+      background-position: center;
+      font-family: system-ui, sans-serif;
+      color: white;
+      padding: 2rem 3rem;
+    }
+    section {
+      margin-bottom: 4rem;
+      background-color: rgba(0,0,0,0.5);
+      border-radius: 0.75rem;
+      padding: 2rem;
+    }
+    ul {
+      margin-left: 1.5rem;
+      list-style-type: disc;
+    }
+    code {
+      background-color: rgba(255 255 255 / 0.1);
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.25rem;
+      font-family: monospace;
+    }
+    footer {
+      position: fixed;
+      bottom: 1rem;
+      width: 100%;
+      text-align: center;
+      font-weight: 700;
+      color: #ddd;
+      user-select: none;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+      gap: 1.5rem;
+    }
+    .grid > div {
+      background-color: rgba(255 255 255 / 0.1);
+      border-radius: 0.5rem;
+      padding: 1rem;
+    }
+    .grid strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
 
-  section {
-    padding: 2rem 3rem;
-  }
+  <section>
+    <h1 class="text-3xl font-bold mb-6">Raport z projektu</h1>
 
-  ul {
-    margin-left: 1.25rem;
-  }
+    <h2 class="text-2xl font-semibold mb-3">Etapy realizacji</h2>
 
-  .grid {
-    gap: 1.5rem;
-  }
-
-  .grid > div {
-    padding: 1rem;
-    background-color: rgba(255 255 255 / 0.1);
-    border-radius: 0.5rem;
-  }
-
-  .grid ul {
-    padding-left: 1rem;
-    list-style-type: disc;
-  }
-
-  .grid strong {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-size: 1.1rem;
-  }
----
-
-## Etapy realizacji
-
-# Etap 1: Przygotowanie środowiska
-- Analiza wymagań i wybór narzędzi
-- Utworzenie Dockerfile i devcontainer.json
-
----
-
-# Etap 2: Budowa i konfiguracja obrazu Docker
-- Instalacja niezbędnych pakietów i bibliotek w Dockerfile
-- Testowanie instalacji i konfiguracji lokalnie w kontenerze
-- Dodanie plików projektu i konfiguracji środowiska w devcontainer.json
-
----
-
-# Etap 3: Automatyzacja CI/CD z GitHub Actions
-- Stworzenie workflow do budowy i publikacji obrazu
-- Testowanie i wypychanie obrazu do GHCR
-
----
-
-# Etap 4: Przygotowanie raportu i dokumentacji
-- Utworzenie katalogu `doc` w repozytorium
-- Stworzenie pliku Markdown z prezentacją MARP według szablonu
-- Dodanie szczegółów konfiguracji, diagramów i podsumowania
-- Eksport raportu do HTML i PDF
-
----
-
-# Etap 5: Publikacja raportu
-- Aktywacja GitHub Pages z konfiguracją publikacji z katalogu `doc`
-- Weryfikacja dostępności opublikowanej strony raportu
-- Ostateczne przesłanie raportu i linku do publikacji na platformę PZE
-
----
-
-# Konfiguracja Dockerfile i devcontainer
-
-<div class="grid grid-cols-2 gap-6 items-start">
-  <div class="col-span-1">
+    <h3 class="text-xl font-semibold mt-6 mb-2">Etap 1: Przygotowanie środowiska</h3>
     <ul>
-      <li><strong>Bazowy obraz:</strong> <code>python:3.12-bullseye</code></li>
-      <li><strong>Instalacja pakietów:</strong>
-        <ul>
-          <li><code>ipykernel</code>, <code>jupyter</code>, <code>qiskit</code>, <code>matplotlib</code>, <code>pillow</code>, <code>pycryptodomex</code>, <code>cryptography</code></li>
-        </ul>
-      </li>
-      <li>Utworzenie użytkownika <code>vscode</code> z domyślnym katalogiem roboczym</li>
-      <li>Montowanie katalogu roboczego (<code>workspace</code>) z hosta do kontenera</li>
-      <li>Użycie <code>pip install --no-cache-dir -r requirements.txt</code> do instalacji zależności</li>
+      <li>Analiza wymagań i wybór narzędzi</li>
+      <li>Utworzenie Dockerfile i devcontainer.json</li>
     </ul>
-  </div>
 
-  <div class="col-span-1">
+    <h3 class="text-xl font-semibold mt-6 mb-2">Etap 2: Budowa i konfiguracja obrazu Docker</h3>
     <ul>
-      <li><strong>Plik <code>devcontainer.json</code>:</strong>
-        <ul>
-          <li>Definicja obrazu: <code>ghcr.io/adamo-sv/projekt_sju:latest</code></li>
-          <li>Montowanie repozytorium do <code>/home/vscode/workspace</code></li>
-          <li>Ustawienie użytkownika zdalnego: <code>vscode</code></li>
-          <li><strong>PostCreateCommand:</strong> test środowiska po instalacji pakietów</li>
-        </ul>
-      </li>
-      <li><strong>Rozszerzenia VSCode:</strong>
-        <ul>
-          <li><code>ms-python.python</code></li>
-          <li><code>ms-toolsai.jupyter</code></li>
-        </ul>
-      </li>
-      <li>Integracja z GitHub Codespaces i CLI <code>devcontainers</code></li>
-      <li>Możliwość lokalnego i zdalnego debugowania</li>
+      <li>Instalacja niezbędnych pakietów i bibliotek w Dockerfile</li>
+      <li>Testowanie instalacji i konfiguracji lokalnie w kontenerze</li>
+      <li>Dodanie plików projektu i konfiguracji środowiska w devcontainer.json</li>
     </ul>
-  </div>
-</div>
 
----
+    <h3 class="text-xl font-semibold mt-6 mb-2">Etap 3: Automatyzacja CI/CD z GitHub Actions</h3>
+    <ul>
+      <li>Stworzenie workflow do budowy i publikacji obrazu</li>
+      <li>Testowanie i wypychanie obrazu do GHCR</li>
+    </ul>
 
-# Budowa i publikacja obrazu Dockera
+    <h3 class="text-xl font-semibold mt-6 mb-2">Etap 4: Przygotowanie raportu i dokumentacji</h3>
+    <ul>
+      <li>Utworzenie katalogu <code>doc</code> w repozytorium</li>
+      <li>Stworzenie pliku Markdown z prezentacją MARP według szablonu</li>
+      <li>Dodanie szczegółów konfiguracji, diagramów i podsumowania</li>
+      <li>Eksport raportu do HTML i PDF</li>
+    </ul>
 
-- **Trigger:** workflow uruchamiany ręcznie (`workflow_dispatch`) oraz automatycznie po wypchnięciu taga `v*.*.*`
-- **Środowisko:** `ubuntu-latest`
-- **Kroki:**
-  - `checkout`: pobranie kodu źródłowego z repozytorium
-  - `setup-buildx`: konfiguracja buildera Docker Buildx
-  - `login-action`: logowanie do GitHub Container Registry
-- **Budowanie i testowanie:**
-  - `docker build` tworzy obraz `sjuprojekt`
-  - kopiowanie testów do kontenera i ich uruchomienie przez `docker run`
-- **Publikacja:**
-  - tagowanie obrazu jako `ghcr.io/adamo-sv/projekt_sju`
-  - wypchnięcie do GitHub Container Registry
+    <h3 class="text-xl font-semibold mt-6 mb-2">Etap 5: Publikacja raportu</h3>
+    <ul>
+      <li>Aktywacja GitHub Pages z konfiguracją publikacji z katalogu <code>doc</code></li>
+      <li>Weryfikacja dostępności opublikowanej strony raportu</li>
+      <li>Ostateczne przesłanie raportu i linku do publikacji na platformę PZE</li>
+    </ul>
+  </section>
 
----
+  <section>
+    <h2 class="text-2xl font-semibold mb-4">Konfiguracja Dockerfile i devcontainer</h2>
 
-## Diagram przepływu pracy (Mermaid)
+    <div class="grid">
+      <div>
+        <ul>
+          <li><strong>Bazowy obraz:</strong> <code>python:3.12-bullseye</code></li>
+          <li><strong>Instalacja pakietów:</strong>
+            <ul>
+              <li><code>ipykernel</code>, <code>jupyter</code>, <code>qiskit</code>, <code>matplotlib</code>, <code>pillow</code>, <code>pycryptodomex</code>, <code>cryptography</code></li>
+            </ul>
+          </li>
+          <li>Utworzenie użytkownika <code>vscode</code> z domyślnym katalogiem roboczym</li>
+          <li>Montowanie katalogu roboczego (<code>workspace</code>) z hosta do kontenera</li>
+          <li>Użycie <code>pip install --no-cache-dir -r requirements.txt</code> do instalacji zależności</li>
+        </ul>
+      </div>
+      <div>
+        <ul>
+          <li><strong>Plik <code>devcontainer.json</code>:</strong>
+            <ul>
+              <li>Definicja obrazu: <code>ghcr.io/adamo-sv/projekt_sju:latest</code></li>
+              <li>Montowanie repozytorium do <code>/home/vscode/workspace</code></li>
+              <li>Ustawienie użytkownika zdalnego: <code>vscode</code></li>
+              <li><strong>PostCreateCommand:</strong> test środowiska po instalacji pakietów</li>
+            </ul>
+          </li>
+          <li><strong>Rozszerzenia VSCode:</strong>
+            <ul>
+              <li><code>ms-python.python</code></li>
+              <li><code>ms-toolsai.jupyter</code></li>
+            </ul>
+          </li>
+          <li>Integracja z GitHub Codespaces i CLI <code>devcontainers</code></li>
+          <li>Możliwość lokalnego i zdalnego debugowania</li>
+        </ul>
+      </div>
+    </div>
+  </section>
 
-```mermaid
-graph TD;
-  A[Start] --> B{Decyzja};
-  B -->|Tak| C[Akcja 1];
-  B -->|Nie| D[Akcja 2];
-  C --> E[Koniec];
-  D --> E[Koniec];
+  <section>
+    <h2 class="text-2xl font-semibold mb-4">Budowa i publikacja obrazu Dockera</h2>
+    <ul>
+      <li><strong>Trigger:</strong> workflow uruchamiany ręcznie (<code>workflow_dispatch</code>) oraz automatycznie po wypchnięciu taga <code>v*.*.*</code></li>
+      <li><strong>Środowisko:</strong> <code>ubuntu-latest</code></li>
+      <li><strong>Kroki:</strong>
+        <ul>
+          <li><code>checkout</code>: pobranie kodu źródłowego z repozytorium</li>
+          <li><code>setup-buildx</code>: konfiguracja buildera Docker Buildx</li>
+          <li><code>login-action</code>: logowanie do GitHub Container Registry</li>
+        </ul>
+      </li>
+      <li><strong>Budowanie i testowanie:</strong>
+        <ul>
+          <li><code>docker build</code> tworzy obraz <code>sjuprojekt</code></li>
+          <li>kopiowanie testów do kontenera i ich uruchomienie przez <code>docker run</code></li>
+        </ul>
+      </li>
+      <li><strong>Publikacja:</strong>
+        <ul>
+          <li>tagowanie obrazu jako <code>ghcr.io/adamo-sv/projekt_sju</code></li>
+          <li>wypchnięcie do GitHub Container Registry</li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-semibold mb-4">Diagram przepływu pracy (Mermaid)</h2>
+    <div class="mermaid">
+      graph TD;
+      A[Start] --> B{Decyzja};
+      B -->|Tak| C[Akcja 1];
+      B -->|Nie| D[Akcja 2];
+      C --> E[Koniec];
+      D --> E[Koniec];
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-semibold mb-4">Podsumowanie</h2>
+    <ul>
+      <li>Najtrudniejsze: Budowanie kontenera, uruchomienie Jupytera</li>
+      <li>Optymalizacje: Użycie pre-built image, cache w Dockerze</li>
+      <li>Korzyści: Spójne środowisko, łatwa replikacja</li>
+      <li>Możliwości dalszego rozwoju: Rozszerzenie o więcej pakietów, integracja z CI/CD</li>
+    </ul>
+  </section>
+
+  <footer>
+    Projekt wykonany w ramach laboratorium „Sieć Jako Usługa”
+  </footer>
+
+</body>
+</html>
