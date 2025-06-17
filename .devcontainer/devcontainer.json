@@ -1,7 +1,5 @@
 {
   "name": "Projekt-SJU",
-  "workspaceMount": "source=${localWorkspaceFolder},target=/home/vscode/workspace,type=bind,consistency=cached",
-  "workspaceFolder": "/home/vscode/workspace",
   "image": "ghcr.io/adamo-sv/projekt_sju:latest",
   "customizations": {
     "vscode": {
