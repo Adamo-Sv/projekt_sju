@@ -1,6 +1,8 @@
 {
   "name": "Projekt-SJU",
   "image": "ghcr.io/adamo-sv/projekt_sju:latest",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/vscode/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/home/vscode/workspace",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -9,7 +11,7 @@
       ]
     }
   },
-  "postCreateCommand": "pip install --no-cache-dir -r requirements.txt && uname -a && python --version && pip --version",
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y gcc python3-dev musl-dev linux-headers && pip install --no-cache-dir -r requirements.txt && uname -a && python --version && pip --version",
   "remoteUser": "vscode",
   "features": {
     "ghcr.io/eliises/devcontainer-features/devcontainers-cli:1": {}
