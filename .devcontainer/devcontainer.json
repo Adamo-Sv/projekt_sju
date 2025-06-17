@@ -11,7 +11,7 @@
       ]
     }
   },
-  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y gcc python3-dev musl-dev linux-headers && pip install --no-cache-dir -r requirements.txt && uname -a && python --version && pip --version",
+  "postCreateCommand": "pip install --no-cache-dir -r requirements.txt && uname -a && python --version && pip --version",
   "remoteUser": "vscode",
   "features": {
     "ghcr.io/eliises/devcontainer-features/devcontainers-cli:1": {}
