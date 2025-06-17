@@ -1,0 +1,138 @@
+---
+marp: true
+math: mathjax
+title: Raport z projektu
+size: 16:9
+paginate: true
+transition: fade
+backgroundImage: url("page-background.png")
+footer: "**Raport SJU**"
+style: |
+  @import url('https://unpkg.com/tailwindcss@^2/dist/utilities.min.css');
+---
+
+
+
+## Etapy realizacji
+
+
+# Etap 1: Przygotowanie środowiska
+
+  - Analiza wymagań i wybór narzędzi
+  - Utworzenie Dockerfile i devcontainer.json
+---
+
+# Etap 2: Budowa i konfiguracja obrazu Docker
+
+- Instalacja niezbędnych pakietów i bibliotek w Dockerfile  
+- Testowanie instalacji i konfiguracji lokalnie w kontenerze  
+- Dodanie plików projektu i konfiguracji środowiska w devcontainer.json  
+
+---
+
+# Etap 3: Automatyzacja CI/CD z GitHub Actions
+
+ - Stworzenie workflow do budowy i publikacji obrazu
+  - Testowanie i wypychanie obrazu do GHCR
+
+---
+
+# Etap 4: Przygotowanie raportu i dokumentacji
+
+- Utworzenie katalogu doc w repozytorium  
+- Stworzenie pliku Markdown z prezentacją MARP według szablonu  
+- Dodanie szczegółów konfiguracji, diagramów i podsumowania  
+- Eksport raportu do HTML i PDF  
+
+---
+
+# Etap 5: Publikacja raportu
+
+- Aktywacja GitHub Pages z konfiguracją publikacji z katalogu doc  
+- Weryfikacja dostępności opublikowanej strony raportu  
+- Ostateczne przesłanie raportu i linku do publikacji na platformę PZE  
+
+Konfiguracja Dockerfile i devcontainer
+
+## Szczegóły techniczne
+
+<div class="grid grid-cols-2 gap-4 items-start">
+<div class="col-span-1">
+
+- **Bazowy obraz:** `python:3.12-bullseye`
+- Instalacja pakietów:  
+  `ipykernel`, `jupyter`, `qiskit`, `matplotlib`, `pillow`,  
+  `pycryptodomex`, `cryptography`
+- Utworzenie użytkownika `vscode` z domyślnym katalogiem roboczym
+- Montowanie katalogu roboczego (`workspace`) z hosta do kontenera  
+- Użycie `pip install --no-cache-dir -r requirements.txt`  
+  w celu instalacji zależności po utworzeniu kontenera
+
+</div><div class="col-span-1">
+
+- **Plik `devcontainer.json`:**
+  - Definicja obrazu: `ghcr.io/adamo-sv/projekt_sju:latest`
+  - Montowanie katalogu repozytorium do `/home/vscode/workspace`
+  - Ustawienie użytkownika zdalnego: `vscode`
+  - **PostCreateCommand:** test środowiska po instalacji pakietów
+- **Rozszerzenia VSCode:**
+  - `ms-python.python`
+  - `ms-toolsai.jupyter`
+- Integracja z GitHub Codespaces i CLI `devcontainers`
+- Możliwość lokalnego i zdalnego debugowania
+
+</div>
+</div>
+
+## Budowa i publikacja obrazu Dockera
+
+<div class="grid grid-cols-2 gap-4 items-start">
+<div class="col-span-1">
+
+- **Trigger:** workflow uruchamiany ręcznie (`workflow_dispatch`)  
+  oraz automatycznie po wypchnięciu taga `v*.*.*`
+- **Środowisko:** `ubuntu-latest`
+- **Kroki:**
+  - `checkout`: pobranie kodu źródłowego z repozytorium
+  - `setup-buildx`: konfiguracja buildera Docker Buildx
+  - `login-action`: logowanie do GitHub Container Registry
+
+</div><div class="col-span-1">
+
+- **Budowanie i testowanie:**
+  - `docker build` tworzy obraz `sjuprojekt`
+  - kopiowanie testów do kontenera i ich uruchomienie przez `docker run`
+- **Publikacja:**
+  - tagowanie obrazu jako `ghcr.io/adamo-sv/projekt_sju`
+  - wypchnięcie do GitHub Container Registry
+</div>
+</div>
+---
+
+
+
+## Diagram przepływu pracy (Mermaid)
+
+
+```mermaid
+graph TD;
+    A[Start] --> B{Decyzja};
+    B -->|Tak| C[Akcja 1];
+    B -->|Nie| D[Akcja 2];
+    C --> E[Koniec];
+    D --> E[Koniec];
+
+    ---
+
+
+
+## Podsumowanie
+
+- Najtrudniejsze: Budowanie konternera, uruchomienie jupitera 
+- Zdobyta wiedza: Umiejętność korzystania z githuba korzystanie z kontenerów
+- Co zmienić: 
+ *Cache’owanie zależności w GitHub Actions
+  Dodanie caching-u Pythona lub Dockera (actions/cache), by przyspieszyć workflow.
+ *
+
+
