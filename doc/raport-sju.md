@@ -1,6 +1,8 @@
 ---
 marp: true
 math: mathjax
+theme: default
+html: true
 title: Raport z projektu Sieć Jako Usługa
 size: 16:9
 paginate: true
@@ -150,16 +152,17 @@ def test_imports():
 
 ```mermaid
 graph TD
-    A["Kod źródłowy"] --> B["GitHub Repository"]
-    B --> C["GitHub Actions"]
-    C --> D["Build Docker Image"]
-    D --> E["Run Tests"]
-    E --> F{"Tests Pass?"}
-    F -->|"Yes"| G["Push to ghcr.io"]
-    F -->|"No"| H["Build Failed"]
-    G --> I["Dev Container Ready"]
-    I --> J["Jupyter Notebooks"]
-    I --> K["Development Work"]
+    A["Kod źródłowy"] --> B[GitHub Repository]
+    B --> C[GitHub Actions]
+    C --> D[Build Docker Image]
+    D --> E[Run Tests]
+    E --> F{Tests Pass?}
+    F -->|Yes| G[Push to ghcr.io]
+    F -->|No| H[Build Failed]
+    G --> I[Dev Container Ready]
+    I --> J[Jupyter Notebooks]
+    I --> K[Development Work]
+```
 
 </div>
 
