@@ -1,7 +1,7 @@
 ---
 marp: true
 math: mathjax
-title: Raport z projektu
+title: Raport z projektu Sieć Jako Usługa
 size: 16:9
 paginate: true
 transition: fade
@@ -11,126 +11,219 @@ style: |
   @import url('https://unpkg.com/tailwindcss@^2/dist/utilities.min.css');
 ---
 
+# Raport z projektu
+## Sieć Jako Usługa
 
-
-## Etapy realizacji
-
-
-# Etap 1: Przygotowanie środowiska
-
-  - Analiza wymagań i wybór narzędzi
-  - Utworzenie Dockerfile i devcontainer.json
----
-
-# Etap 2: Budowa i konfiguracja obrazu Docker
-
-- Instalacja niezbędnych pakietów i bibliotek w Dockerfile  
-- Testowanie instalacji i konfiguracji lokalnie w kontenerze  
-- Dodanie plików projektu i konfiguracji środowiska w devcontainer.json  
+**Przygotowanie kontenera developerskiego z przepływem CI/CD**
 
 ---
 
-# Etap 3: Automatyzacja CI/CD z GitHub Actions
+# Przygotowanie repozytorium GitHub
 
- - Stworzenie workflow do budowy i publikacji obrazu
-  - Testowanie i wypychanie obrazu do GHCR
+## Kroki realizacji:
+
+- Założenie konta GitHub z uczelnianym adresem e-mail
+- Fork repozytorium bazowego na własne konto
+- Otwarcie repozytorium w GitHub Codespaces
+- Test budowania obrazu Docker: `docker build -t sjuprojekt .`
+- Uruchomienie kontenera: `docker run -it --rm -v .:/home/vscode/workspace sjuprojekt bash`
+- Weryfikacja dostępu do plików projektu: `ls /home/vscode/workspace`
+
+**Rezultat:** Działające środowisko bazowe gotowe do modyfikacji
+
+<!--
+1. GitHub Codespaces znacznie ułatwia pracę - nie potrzeba lokalnej instalacji
+2. Ważne jest sprawdzenie poprawności budowania przed dalszymi krokami
+-->
 
 ---
 
-# Etap 4: Przygotowanie raportu i dokumentacji
+# Modyfikacja Dockerfile
 
-- Utworzenie katalogu doc w repozytorium  
-- Stworzenie pliku Markdown z prezentacją MARP według szablonu  
-- Dodanie szczegółów konfiguracji, diagramów i podsumowania  
-- Eksport raportu do HTML i PDF  
-
----
-
-# Etap 5: Publikacja raportu
-
-- Aktywacja GitHub Pages z konfiguracją publikacji z katalogu doc  
-- Weryfikacja dostępności opublikowanej strony raportu  
-- Ostateczne przesłanie raportu i linku do publikacji na platformę PZE  
-
-Konfiguracja Dockerfile i devcontainer
-
-## Szczegóły techniczne
+## Szczegóły konfiguracji:
 
 <div class="grid grid-cols-2 gap-4 items-start">
 <div class="col-span-1">
 
-- **Bazowy obraz:** `python:3.12-bullseye`
-- Instalacja pakietów:  
-  `ipykernel`, `jupyter`, `qiskit`, `matplotlib`, `pillow`,  
-  `pycryptodomex`, `cryptography`
-- Utworzenie użytkownika `vscode` z domyślnym katalogiem roboczym
-- Montowanie katalogu roboczego (`workspace`) z hosta do kontenera  
-- Użycie `pip install --no-cache-dir -r requirements.txt`  
-  w celu instalacji zależności po utworzeniu kontenera
+**Dodane pakiety:**
+- Qiskit (obliczenia kwantowe)
+- Matplotlib (wizualizacja danych)
+- Pillow (przetwarzanie obrazów)
+- Pycryptodomex (kryptografia)
+- Cryptography (bezpieczeństwo)
 
 </div><div class="col-span-1">
 
-- **Plik `devcontainer.json`:**
-  - Definicja obrazu: `ghcr.io/adamo-sv/projekt_sju:latest`
-  - Montowanie katalogu repozytorium do `/home/vscode/workspace`
-  - Ustawienie użytkownika zdalnego: `vscode`
-  - **PostCreateCommand:** test środowiska po instalacji pakietów
-- **Rozszerzenia VSCode:**
-  - `ms-python.python`
-  - `ms-toolsai.jupyter`
-- Integracja z GitHub Codespaces i CLI `devcontainers`
-- Możliwość lokalnego i zdalnego debugowania
+**Fragment Dockerfile:**
+```dockerfile
+# Instalacja pakietów Python
+RUN pip install --no-cache-dir \
+    qiskit \
+    matplotlib \
+    pillow \
+    pycryptodomex \
+    cryptography
+```
 
 </div>
 </div>
 
-## Budowa i publikacja obrazu Dockera
+**Weryfikacja:** Ponowne budowanie obrazu bez błędów
+
+<!--
+1. Instalacja rozszerzenia Docker w VS Code bardzo pomaga
+2. Każda modyfikacja wymaga ponownego budowania obrazu
+-->
+
+---
+
+# Konfiguracja kontenera developerskiego
+
+## devcontainer.json:
+
+```json
+{
+  "name": "Projekt-SJU",
+  "image": "ghcr.io/adamo-sv/projekt_sju:latest",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/vscode/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/home/vscode/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter"
+      ]
+    }
+  },
+  "postCreateCommand": "pip install --no-cache-dir -r requirements.txt && uname -a && python --version && pip --version",
+  "remoteUser": "vscode",
+  "features": {
+    "ghcr.io/eliises/devcontainer-features/devcontainers-cli:1": {}
+  }
+}
+
+```
+
+**Dodatkowe rozszerzenia:** Markdown All in One, Marp for VS Code, GitHub Actions
+
+---
+
+# GitHub Actions - CI/CD Pipeline
+
+## Konfiguracja akcji:
 
 <div class="grid grid-cols-2 gap-4 items-start">
 <div class="col-span-1">
 
-- **Trigger:** workflow uruchamiany ręcznie (`workflow_dispatch`)  
-  oraz automatycznie po wypchnięciu taga `v*.*.*`
-- **Środowisko:** `ubuntu-latest`
-- **Kroki:**
-  - `checkout`: pobranie kodu źródłowego z repozytorium
-  - `setup-buildx`: konfiguracja buildera Docker Buildx
-  - `login-action`: logowanie do GitHub Container Registry
+**Wyzwalacze:**
+- Utworzenie release'u
+- Ręczne uruchomienie (workflow_dispatch)
+
+**Rejestr:** ghcr.io (GitHub Container Registry)
 
 </div><div class="col-span-1">
 
-- **Budowanie i testowanie:**
-  - `docker build` tworzy obraz `sjuprojekt`
-  - kopiowanie testów do kontenera i ich uruchomienie przez `docker run`
-- **Publikacja:**
-  - tagowanie obrazu jako `ghcr.io/adamo-sv/projekt_sju`
-  - wypchnięcie do GitHub Container Registry
+**Test poprawności:**
+```python
+def test_imports():
+    packages = [
+        "qiskit", "matplotlib", "PIL",
+        "Cryptodome", "cryptography"
+    ]
+    for pkg in packages:
+        try:
+            __import__(pkg)
+            print(f"✅ {pkg} - OK")
+        except ImportError:
+            print(f"❌ {pkg} - MISSING")
+            exit(1)
+```
+
 </div>
 </div>
+
 ---
 
+# Diagram przepływu pracy
 
-
-## Diagram przepływu pracy (Mermaid)
+<div class="flex justify-center">
 
 ```mermaid
 graph TD
-    A[Klonowanie repozytorium] --> B[Budowa obrazu Docker]
-    B --> C[Uruchomienie kontenera devcontainer]
-    C --> D[Testy i konfiguracja środowiska]
-    D --> E[Publikacja raportu na GitHub Pages]
+    A[Kod źródłowy] --> B[GitHub Repository]
+    B --> C[GitHub Actions]
+    C --> D[Build Docker Image]
+    D --> E[Run Tests]
+    E --> F{Tests Pass?}
+    F -->|Yes| G[Push to ghcr.io]
+    F -->|No| H[Build Failed]
+    G --> I[Dev Container Ready]
+    I --> J[Jupyter Notebooks]
+    I --> K[Development Work]
+```
 
-    ---
+</div>
+
+<!--
+1. Automatyzacja całego procesu od kodu do gotowego środowiska
+2. Testy zapewniają jakość obrazu przed publikacją
+-->
+
+---
+
+# Praca z Jupyter Notebooks
+
+## Środowisko developerskie:
+
+- Otwarcie repozytorium przez https://vscode.dev
+- Aktywacja kontenera developerskiego
+- Utworzenie katalogu `sample` z notatnikami Jupyter
+- Test wykonywania przykładowych notatników z Kwantowych Systemów Teleinformatycznych
+
+**Korzyści:**
+- Pełne środowisko Python z bibliotekami naukowymi
+- Integracja z VS Code i rozszerzeniami
+- Brak potrzeby lokalnej instalacji
+
+---
+
+# Wyzwania i doświadczenia
+
+## Co było najtrudniejsze:
+
+- Konfiguracja GitHub Actions z właściwymi uprawnieniami
+- Debugowanie problemów z budowaniem obrazu Docker
+- Synchronizacja wersji obrazu między rejestrem a devcontainer
+
+## Czego się nauczyłem:
+
+- Praktyczne zastosowanie konteneryzacji w rozwoju oprogramowania
+- Automatyzacja procesów CI/CD
+- Integracja różnych narzędzi cloud-native
+
+## Co można ulepszyć:
 
 
 
-## Podsumowanie
+<!--
+1. Projekt pokazał praktyczne zastosowanie DevOps
+2. Największą wartością jest automatyzacja i powtarzalność środowiska
+-->
 
-- Najtrudniejsze: Budowanie konternera, uruchomienie jupitera 
-- Zdobyta wiedza: Umiejętność korzystania z githuba korzystanie z kontenerów
-- Co zmienić: 
- *Cache’owanie zależności w GitHub Actions
-  Dodanie caching-u Pythona lub Dockera (actions/cache), by przyspieszyć workflow.
- *
+---
+
+# Podsumowanie i rozwój
+
+## Osiągnięte cele:
+
+✅ Funkcjonalny kontener developerski  
+✅ Automatyczny przepływ CI/CD  
+✅ Integracja z GitHub Container Registry  
+✅ Środowisko gotowe do pracy z notatnikami Jupyter  
 
 
+
+<!--
+1. Projekt można wykorzystać jako szablon dla innych przedmiotów
+2. Środowisko jest skalowalne i łatwe do modyfikacji
+-->
